@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import confetti from 'canvas-confetti'
 import { TURNS } from './constants'
 import { checkWinnerFrom } from './logic/checkWinnerFrom'
@@ -25,6 +25,15 @@ function App() {
 		return turnFromLocalStorage ?? TURNS.X
 	})
 	const [winner, setWinner] = useState(null)
+
+	// // * Se usa un use Effect para guardar partida, porque en este caso se usa el localStorage, el cual es un proceso lento y bloqueante, por lo que no debería ejecutarse durante el renderizado de un componente en un manejador de eventos, mejor ejecutarlo después que se haya renderizado el componente
+	// useEffect(() => {
+	// 	// Guardando partida
+	// 	saveGameToStorage({
+	// 		board,
+	// 		turn,
+	// 	})
+	// }, [turn, board])
 
 	const resetGame = () => {
 		setBoard(Array(9).fill(null))
