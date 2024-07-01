@@ -113,3 +113,42 @@ const [board, setBoard] = useState(() => { // 👈
 ```
 
 Con esto además la obtención del _local storage_ sólo se ejecutará una vez en la inicialización del estado, y no en cada render
+
+## Comprobar suscripciones a eventos
+
+Un error muy común al usar `useEffect` es olvidarse desuscribirse a eventos, ya que si olvidamos hacerlo al limpiar el efecto, dichas suscripciones se irán acumulando cada vez que el efecto se ejecute, provocando problemas de rendimiento:
+
+```jsx
+useEffect(() => {
+  function handleMove(event) {
+    const { clientX, clientY } = event
+    setPosition({ x: clientX, y: clientY })
+  }
+  if (enabled) window.addEventListener('pointermove', handleMove) // ❌
+}, [enabled])
+```
+
+**Algo que nos puede servir para comprobar a cuantos eventos nos hemos suscrito, es usar en la consola del navegador el método `getEventListeners()`, y pasarle como parámetro el objeto `window`**, esto nos mostrará una lista de todos los eventos suscritos, y podemos comprobar si hay un exceso de estos hayamos olvidado limpiar, o eventos a los que estamos suscritos y no deberíamos.
+
+> [!warning]
+> `getEventListeners()` solo funciona en navegadores basados en _Chromium_
+
+En este caso podemos ver 4 eventos `pointermove`, los cuales no deberían existir, solamente debería haber uno:
+
+![[2-usestate-useefect-1.png]]
+
+Para corregir esto simplemente debemos recordar que cada vez que nos suscribamos a un evento, también debemos desuscribirnos en la función limpiadora del efecto:
+
+```jsx
+useEffect(() => {
+  function handleMove(event) {
+    const { clientX, clientY } = event
+    setPosition({ x: clientX, y: clientY })
+  }
+  if (enabled) window.addEventListener('pointermove', handleMove)
+  return () => window.removeEventListener('pointermove', handleMove) // ✅
+}, [enabled])
+```
+
+
+
