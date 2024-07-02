@@ -1,6 +1,7 @@
 import './App.css'
 import { useEffect, useState } from 'react'
 import { CAT_ENDPOINT_RANDOM_FACT, CAT_ENDPOINT_IMAGE_URL } from './constants.js'
+import { getRandomFact } from './services/facts.js'
 
 export default function App () {
   const [fact, setFact] = useState('')
@@ -17,10 +18,7 @@ export default function App () {
 
     async function fetchData () {
       try {
-        const resp = await fetch(CAT_ENDPOINT_RANDOM_FACT, { signal })
-        if (!resp.ok) throw new Error('Network response was not ok')
-
-        const { fact } = await resp.json()
+        const fact = await getRandomFact({ signal })
 
         if (ignore) return null
         setFact(fact)
@@ -49,11 +47,19 @@ export default function App () {
       })
   }, [fact])
 
+  async function handleClick () {
+    const newFact = await getRandomFact()
+    setFact(newFact)
+  }
+
   return (
     <main>
       <h1>App de gaticos</h1>
       {isLoading && <p>Loading...</p>}
       {!!error && <p>Error: {error.message}</p>}
+
+      <button onClick={handleClick}>Get new fact</button>
+
       {fact && <p>{fact}</p>}
       {imageUrl && <img src={imageUrl} alt={`Image extracted using the first three words for ${fact}`} />}
     </main>
