@@ -1,11 +1,11 @@
 import './App.css'
 import { useEffect, useState } from 'react'
-import { CAT_ENDPOINT_RANDOM_FACT, CAT_ENDPOINT_IMAGE_URL } from './constants.js'
 import { getRandomFact } from './services/facts.js'
+import { useCatImage } from './hooks/use-cat-image.js'
 
 export default function App () {
   const [fact, setFact] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
+  const { imageUrl } = useCatImage({ fact })
 
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -34,18 +34,6 @@ export default function App () {
     }
     fetchData()
   }, [])
-
-  // Para obtener la imagen cada vez que tengamos una cita
-  useEffect(() => {
-    if (!fact) return undefined
-
-    const threeFirstWord = fact.split(' ', 3).join(' ')
-    fetch(`${CAT_ENDPOINT_IMAGE_URL}/${threeFirstWord}?fontSize=50&fontColor=white`)
-      .then(data => {
-        const { url } = data
-        setImageUrl(url)
-      })
-  }, [fact])
 
   async function handleClick () {
     const newFact = await getRandomFact()
