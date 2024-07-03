@@ -29,3 +29,23 @@ export const getRandomFact = async () => { // 👈
   return fact // ✅
 }
 ```
+
+## Evitar dar nombre a _custom hooks_ que revelen su implemetación
+
+Una mala práctica es hacer que los nombres de nuestros _custom hooks_ digan mucho sobre su implementación, esto porque la implementación de los _custom hooks_ pueden cambiar, los _custom hooks_ deben ser _cajas negras_, no nos debería importar cómo están implementado, sólo su resultado.
+
+Nombres como el siguiente está mal, ya que puede insinuar que los datos los obtendremos usando _Axios_, pero también podríamos obtenerlo desde el _local storage_ u otro sitio, por lo que dicho nombre ya no sería correcto:
+
+```jsx
+export function useAxiosCatFacts() { // ❌
+  // ...
+}
+```
+
+Un mejor nombre debe de ser uno que esté relacionado con lo que devuelve dicho _custom hook_, que es lo que nos interesa:
+
+```jsx
+export function useCatFacts() { // ✔
+  // ...
+}
+```
