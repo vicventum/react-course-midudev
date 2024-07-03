@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CAT_ENDPOINT_IMAGE_URL } from '../constants'
+import { CAT_ENDPOINT_IMAGE_URL } from '../../constants'
 
 export const useCatImage = ({ fact }) => {
   const [imageUrl, setImageUrl] = useState('')

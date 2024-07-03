@@ -1,9 +1,9 @@
 import './App.css'
-import { useCatImage } from './hooks/use-cat-image.js'
-import { useCatFact } from './hooks/use-cat-fact.js'
+import { useCatImage } from './api/hooks/use-cat-image.js'
+import { useCatFact } from './api/hooks/use-cat-fact.js'
 
 export default function App () {
-  const { fact, isLoading, error, refreshFact } = useCatFact()
+  const { data: fact, isLoading, isError, error, refresh: refreshFact } = useCatFact()
   const { imageUrl } = useCatImage({ fact })
 
   async function handleClick () {
@@ -14,7 +14,7 @@ export default function App () {
     <main>
       <h1>App de gaticos</h1>
       {isLoading && <p>Loading...</p>}
-      {!!error && <p>Error: {error.message}</p>}
+      {isError && <p>Error: {error.message}</p>}
 
       <button onClick={handleClick}>Get new fact</button>
 
