@@ -4,7 +4,9 @@ import { useCatFact } from './api/hooks/use-cat-fact.js'
 
 export default function App () {
   const { data: fact, isLoading, isError, error, refresh: refreshFact } = useCatFact()
-  const { imageUrl } = useCatImage({ fact })
+  const { data: imageUrl, isLoading: imgIsLoading } = useCatImage({ fact })
+  // const { imageUrl } = useCatImage({ fact })
+  console.log('🚀 ~ App ~ imageUrl:', imageUrl)
 
   async function handleClick () {
     refreshFact()
@@ -20,6 +22,7 @@ export default function App () {
 
       {fact && <p>{fact}</p>}
       {imageUrl && <img src={imageUrl} alt={`Image extracted using the first three words for ${fact}`} />}
+      {imgIsLoading && <p>Loading image...</p>}
     </main>
   )
 }

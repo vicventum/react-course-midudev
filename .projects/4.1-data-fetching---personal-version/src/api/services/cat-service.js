@@ -7,9 +7,9 @@ const getRandomFact = async (provider, options) => {
 }
 
 const getCatImage = async (provider, options) => {
-  const { word = '', signal = null } = options
+  const { words = '', signal = null } = options
 
-  const catImage = await provider({ word, signal })
+  const catImage = await provider({ words, signal })
 
   return catImage
 }
