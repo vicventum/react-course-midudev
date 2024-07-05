@@ -2,12 +2,12 @@ import './App.css'
 import { useRef, useState } from 'react'
 import { MovieList } from './components/MovieList'
 import { useMovies } from './hooks/useMovies'
+import { useSearch } from './hooks/useSearch'
 
 function App () {
   const { movies } = useMovies()
+  const { query, setQuery, error } = useSearch()
   // const inputRef = useRef()
-  const [query, setQuery] = useState('')
-  const [error, setError] = useState(null)
 
   function handleSubmit (event) {
     event.preventDefault()
@@ -24,26 +24,7 @@ function App () {
   }
 
   function handleChange (event) {
-    const newQuery = event.target.value
-    // ? Validando que no comience con espacio vacío antes de setear el estado
-    if (newQuery.startsWith(' ')) return null
-    setQuery(newQuery)
-
-    // ? Validaciones simples con JavaScript
-    if (!newQuery) {
-      setError('You must enter the name of a movie')
-      return null
-    }
-    if (newQuery.match(/^\d+$/)) {
-      setError('You cannot search for a movie that only contains a numberYou must enter the name of a movie')
-      return null
-    }
-    if (newQuery.length < 3) {
-      setError('The movie name must be at least 3 characters')
-      return null
-    }
-
-    setError(null)
+    setQuery(event.target.value)
   }
 
   return (
