@@ -1,7 +1,7 @@
 import { Movie } from './Movie.jsx'
 
 export function MovieList ({ movies }) {
-  console.log('🚀 ~ MovieList ~ movies:', movies)
+  // console.log('🚀 ~ MovieList ~ movies:', movies)
   const hasMovies = !!movies?.length
 
   return (
