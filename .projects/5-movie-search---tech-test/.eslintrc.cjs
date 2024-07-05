@@ -19,6 +19,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true }
     ],
-    'react/prop-types': 'warn'
+    'react/prop-types': 'warn',
+    'spaced-comment': 'off'
   }
 }
