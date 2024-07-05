@@ -4,7 +4,7 @@ import { getCatImage } from '../services/cat-service'
 import { useFetch } from './use-fetch'
 
 function useCatImage ({ fact }) {
-  console.log('🟡 ~ useCatImage ~ fact:', fact)
+  console.log('🟡 ~ hook useCatImage ~ fact:', fact)
   const provider = getImage
   // if (!fact) return null
 
@@ -12,12 +12,11 @@ function useCatImage ({ fact }) {
     // if (!fact) return { data: null, isLoading: true, error: null, refresh: null }
 
     const threeFirstWord = fact.split(' ', 3).join(' ')
-    console.log('🚀 ~ const{data,isLoading,error,refresh}=useFetch ~ threeFirstWord:', threeFirstWord)
     return getCatImage(provider, { words: threeFirstWord, signal })
   })
 
   useEffect(() => {
-    console.log('🟡🟡 ~ useCatImage ~ fact:', fact)
+    console.log('🟡🟡 ~ hook useEffect useCatImage ~ fact:', fact)
     if (!fact) return undefined
     refresh()
   }, [fact])

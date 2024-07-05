@@ -1,10 +1,9 @@
 import './App.css'
-import mockResponseMovies from './mocks/search-with-results.json'
-import mockSearchNoResults from './mocks/search-no-results.json'
+import { MovieList } from './components/MovieList'
+import { useMovies } from './hooks/useMovies'
 
 function App () {
-  const movies = mockResponseMovies.Search
-  const hasMovies = !!movies?.length
+  const { movies } = useMovies()
 
   return (
     <>
@@ -23,24 +22,7 @@ function App () {
         </header>
 
         <main>
-          {
-            hasMovies &&
-              <ul>
-                {
-                movies.map(movie => (
-                  <li key={movie.imdbID}>
-                    <h3>{movie.Title}</h3>
-                    <p>{movie.Year}</p>
-                    <img src={movie.Poster} alt={movie.Title} />
-                  </li>
-                ))
-              }
-              </ul>
-            }
-          {
-            !hasMovies &&
-              <p>No se encontraron películas para esta búsqueda</p>
-          }
+          <MovieList movies={movies} />
         </main>
       </div>
     </>

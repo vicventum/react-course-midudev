@@ -8,7 +8,7 @@ function useFetch (service) {
 
   useEffect(() => {
     async function fetchData ({ signal, ignore } = {}) {
-      console.log('entra')
+      console.log('🟠 fetch')
       try {
         const data = await service({ signal })
         if (ignore) return null
@@ -28,6 +28,7 @@ function useFetch (service) {
     fetchData({ signal, ignore })
 
     return () => {
+      console.log('🔴 clean')
       ignore = true
       controller.abort()
     }
