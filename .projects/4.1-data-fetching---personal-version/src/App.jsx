@@ -6,7 +6,7 @@ export default function App () {
   const { data: fact, isLoading, isError, error, refresh: refreshFact } = useCatFact()
   const { data: imageUrl, isLoading: imgIsLoading } = useCatImage({ fact })
   // const { imageUrl } = useCatImage({ fact })
-  console.log('🚀 ~ App ~ imageUrl:', imageUrl)
+  console.log('🟢 ~ App ~ imageUrl:', imageUrl)
 
   async function handleClick () {
     refreshFact()
