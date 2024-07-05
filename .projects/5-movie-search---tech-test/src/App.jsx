@@ -4,8 +4,8 @@ import { useMovies } from './hooks/useMovies'
 import { useSearch } from './hooks/useSearch'
 
 function App () {
-  const { movies } = useMovies()
   const { query, setQuery, error } = useSearch()
+  const { movies, getMovies } = useMovies({ query })
   // const inputRef = useRef()
 
   function handleSubmit (event) {
@@ -19,7 +19,7 @@ function App () {
     //   new window.FormData(event.target)
     // )
 
-    console.log('🚀 ~ handleSubmit ~ query:', query)
+    getMovies()
   }
 
   function handleChange (event) {
@@ -45,7 +45,7 @@ function App () {
             </fieldset>
           </form>
 
-          {error && <p style={{ color: 'tomato' }}>{error}</p>}
+          {error && <p style={{ color: 'tomato' }} className='form-error'>{error}</p>}
         </header>
 
         <main>

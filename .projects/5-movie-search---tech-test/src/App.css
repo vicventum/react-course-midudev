@@ -17,9 +17,14 @@ main {
   width: 100%;
 }
 
-form {
+.form {
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.form-error {
+  margin-top: -2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .movie-list {
