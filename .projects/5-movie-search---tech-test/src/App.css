@@ -14,8 +14,29 @@
 main {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 form {
   align-items: center;
+  margin-bottom: 2rem;
+}
+
+.movie-list {
+  padding: 0;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2.5rem;
+
+
+}
+
+.movie {
+  list-style: none;
+
+  h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
 }

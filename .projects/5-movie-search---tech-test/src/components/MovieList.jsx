@@ -8,7 +8,7 @@ export function MovieList ({ movies }) {
     <>
       {
       hasMovies &&
-        <ul>
+        <ul className='movie-list'>
           {
           movies.map(movie => (
             <Movie

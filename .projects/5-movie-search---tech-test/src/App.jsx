@@ -1,5 +1,4 @@
 import './App.css'
-import { useRef, useState } from 'react'
 import { MovieList } from './components/MovieList'
 import { useMovies } from './hooks/useMovies'
 import { useSearch } from './hooks/useSearch'
@@ -15,10 +14,10 @@ function App () {
     // const inputElement = inputRef.current
     // const value = inputElement.value
 
-    // ? Obteniendo los dantos sin usar una referencia
-    const { query } = Object.fromEntries(
-      new window.FormData(event.target)
-    )
+    // // ? Obteniendo los dantos sin usar una referencia
+    // const { query } = Object.fromEntries(
+    //   new window.FormData(event.target)
+    // )
 
     console.log('🚀 ~ handleSubmit ~ query:', query)
   }
