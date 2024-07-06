@@ -5,7 +5,7 @@ import { useSearch } from './hooks/useSearch'
 
 function App () {
   const { query, setQuery, error } = useSearch()
-  const { movies,isLoading, error, getMovies } = useMovies({ query })
+  const { movies, isLoading, getMovies } = useMovies({ query })
   // const inputRef = useRef()
 
   function handleSubmit (event) {

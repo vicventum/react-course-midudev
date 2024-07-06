@@ -174,4 +174,85 @@ export default App
 
 ```
 
-Si bien tiene esto tiene sus **ventajas**, como simplificar la **validación de los inputs**, también tiene su **desventajas**, ya que hace que sea **mucho más lento, debido a que cada vez que se actualiza el input disparará un render (aunque esto se puede mitigar con el uso de `useMemo`)**
+Si bien tiene esto tiene sus **ventajas**, como simplificar la **validación de los inputs**, también tiene su **desventajas**, ya que hace que sea **mucho más lento, debido a que cada vez que se actualiza el input disparará un render (aunque esto se puede mitigar con el uso de `useMemo`)**.
+
+## Comprar estado actual con el anterior - Evitando la misma llamada HTTP
+
+### ❌ Forma incorrecta: usando variable fuera de la definición del hook
+
+Una forma de hacerlo que es una mala práctica pero puede funcionar para casos acotados, es **crear un variable tipo _bandera_ fuera de la definición del hook**.
+
+Con ello en este caso podremos guardar el estado en un render, y en el siguiente compararlo con el estado actual:
+
+**useMovies.js**
+```js
+import { useState, useRef } from 'react'
+import { searchMovies } from '../services/movies'
+
+function useMovies ({ query }) {
+  const [movies, setMovies] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  let previousSearch = '' // 👈
+  const getMovies = async () => {
+    if (query === previousSearch) return null // 👈
+    try {
+      setIsLoading(true)
+      setError(null)
+      previousSearch = query // 👈
+      const newMovies = await searchMovies({ query })
+      setMovies(newMovies)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { movies, getMovies, isLoading, error }
+}
+
+export { useMovies }
+```
+
+Si bien esto funcionará correctamente, **sólo lo hará mientras usemos ese hook en un sólo sitio, esto porque dicha variable `previousSearch` será compartida cada vez que se invoque dicho hook**, por lo que si llamamos a `useMovies` en otro componente, ya esta solución no funcionará correctamente.
+
+### ✅ Forma correcta: Usando `useRef`
+
+Es por ello que una mejor forma de hacerlo es haciendo uso de un `useRef`, debido a que las referencias no se reinician entre renderizados, podremos guardar el estado en un render, y en el siguiente compararlo con el estado actual:
+
+**useMovies**
+```jsx
+import { useState, useRef } from 'react'
+import { searchMovies } from '../services/movies'
+
+function useMovies ({ query }) {
+  const [movies, setMovies] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  // ? Se usa una referencia para guardar el estado anterior
+  const previousSearch = useRef(query) // 👈
+
+  const getMovies = async () => {
+    if (query === previousSearch.current) return null // 👈
+    try {
+      setIsLoading(true)
+      setError(null)
+      previousSearch.current = query // 👈
+      const newMovies = await searchMovies({ query })
+      setMovies(newMovies)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { movies, getMovies, isLoading, error }
+}
+
+export { useMovies }
+```
+
+Esto ya no tendrá el problema compartirse entre llamados al hooks en múltiples componentes, ya que el `useRef` se inicializa en cada llamado diferente.
