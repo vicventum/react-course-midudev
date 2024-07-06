@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useCallback } from 'react'
 // import mockResponseWithoutMovies from '../mocks/search-no-results.json'
 import { searchMovies } from '../services/movies'
 
@@ -9,8 +9,8 @@ function useMovies ({ query, isSort }) {
   // ? Se usa una referencia para guardar el estado anterior
   const previousSearch = useRef(query)
 
-  // * Usando `useMemo` para que la función sólo se cree una vez, pero acepte por parámetro la nueva query
-  const getMovies = useMemo(() => async ({ query }) => {
+  // * Usando `useCallback` para que la función sólo se cree una vez, pero acepte por parámetro la nueva query
+  const getMovies = useCallback(async ({ query }) => {
     console.log('🚀 ~ getMovies ~ query:', query)
     if (query === previousSearch.current) return null
     try {
