@@ -255,4 +255,4 @@ function useMovies ({ query }) {
 export { useMovies }
 ```
 
-Esto ya no tendrá el problema compartirse entre llamados al hooks en múltiples componentes, ya que el `useRef` se inicializa en cada llamado diferente.
+Esto ya no tendrá el problema compartirse entre llamados al hooks en múltiples componentes, ya que el `useRef` se declara de forma interna en el hook, por lo que se inicializa en cada llamado diferente.
