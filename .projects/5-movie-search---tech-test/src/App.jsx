@@ -1,5 +1,6 @@
-import { useState } from 'react'
 import './App.css'
+import debounce from 'just-debounce-it'
+import { useState, useCallback } from 'react'
 import { MovieList } from './components/MovieList'
 import { useMovies } from './hooks/useMovies'
 import { useSearch } from './hooks/useSearch'
@@ -9,6 +10,12 @@ function App () {
   const { query, setQuery, error } = useSearch()
   const { movies, isLoading, getMovies } = useMovies({ query, isSort })
   // const inputRef = useRef()
+
+  const debouncedGetMovies = useCallback(debounce(newQuery => {
+    // Realizando la llamada HTTP cada vez que escribimos
+    getMovies({ query: newQuery })
+  }, 400)
+  , [getMovies])
 
   function handleSubmit (event) {
     event.preventDefault()
@@ -25,7 +32,11 @@ function App () {
   }
 
   function handleChange (event) {
-    setQuery(event.target.value)
+    const newQuery = event.target.value
+
+    setQuery(newQuery)
+    // Realizando la llamada HTTP cada vez que escribimos
+    debouncedGetMovies(newQuery)
   }
 
   function handleSort () {

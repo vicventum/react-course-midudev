@@ -11,7 +11,6 @@ function useMovies ({ query, isSort }) {
 
   // * Usando `useCallback` para que la función sólo se cree una vez, pero acepte por parámetro la nueva query
   const getMovies = useCallback(async ({ query }) => {
-    console.log('🚀 ~ getMovies ~ query:', query)
     if (query === previousSearch.current) return null
     try {
       setIsLoading(true)

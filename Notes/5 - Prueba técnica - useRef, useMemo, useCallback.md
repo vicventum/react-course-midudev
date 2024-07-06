@@ -256,3 +256,84 @@ export { useMovies }
 ```
 
 Esto ya no tendrá el problema compartirse entre llamados al hooks en múltiples componentes, ya que el `useRef` se declara de forma interna en el hook, por lo que se inicializa en cada llamado diferente.
+
+## _debounce_ - Evitar que se haga la búsqueda continuamente al escribir
+
+Si tenemos un formulario de búsqueda que realiza una petición HTTP mientras el usuario va ingresando la búsqueda, podemos hacer uso de la técnica del _debounce_, que se basa en no disparar la llamada HTTP en cada pulsación de una tecla, sino esperar un cierto tiempo hasta que el usuario deje de escribir para ahora sí ejecutar la llamada HTTP con el último valor ingresado.
+
+Para ello, si bien podemos crear nuestra propia implementación de un _debounce_, lo más práctico es usar ya una librería que lo haga. Una librería recomendada para esto es `just-debounce-it`, en el que una vez instalada, la ejecutamos dentro de un `useCallback` para que se ejecute sólo una vez (o en este caso, cada vez que cambien la función `getMovies` pero que también se ejecutará una vez porque la rodeamos en otro `useCallback`), y le pasamos como primer parámetro una función con la llamada HTTP que queramos ejecutar, y como segundo parámetro el tiempo que queremos esperar:
+
+**App.jsx**
+```jsx
+import './App.css'
+import debounce from 'just-debounce-it' // 👈
+import { useState, useCallback } from 'react'
+import { MovieList } from './components/MovieList'
+import { useMovies } from './hooks/useMovies'
+import { useSearch } from './hooks/useSearch'
+
+function App () {
+  const [isSort, setIsSort] = useState(false)
+  const { query, setQuery, error } = useSearch()
+  const { movies, isLoading, getMovies } = useMovies({ query, isSort })
+
+  const debouncedGetMovies = useCallback(debounce(newQuery => { // 👈
+    // Realizando la llamada HTTP cada vez que escribimos
+    getMovies({ query: newQuery }) // 👈
+  }, 400)
+  , [getMovies]) // 👈
+
+  function handleSubmit (event) {
+    event.preventDefault()
+    getMovies({ query })
+  }
+
+  function handleChange (event) {
+    const newQuery = event.target.value
+
+    setQuery(newQuery)
+    // Realizando la llamada HTTP cada vez que escribimos
+    debouncedGetMovies(newQuery)
+  }
+
+  function handleSort () {
+    setIsSort(!isSort)
+  }
+
+  return (
+    <>
+      <div>
+        <header>
+          <h1>Movie Search</h1>
+          <form className='form' onSubmit={handleSubmit}>
+            <fieldset role='group'>
+              <input
+                value={query}
+                style={{ borderColor: error ? 'tomato' : 'transparent' }}
+                name='query'
+                type='search'
+                placeholder='Star Wars, Blade Runner, The Matrix...'
+                onChange={handleChange}
+              />
+              <button type='submit'>Search</button>
+            </fieldset>
+            <label>
+              <input type='checkbox' name='sort' checked={isSort} onChange={handleSort} />
+              <span>Order by title</span>
+            </label>
+          </form>
+
+          {error && <p style={{ color: 'tomato' }} className='form-error'>{error}</p>}
+        </header>
+
+        <main>
+          {isLoading ? <p>Loading...</p> : <MovieList movies={movies} />}
+        </main>
+      </div>
+    </>
+  )
+}
+
+export default App
+
+```
