@@ -1,15 +1,17 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 // import mockResponseWithoutMovies from '../mocks/search-no-results.json'
 import { searchMovies } from '../services/movies'
 
-function useMovies ({ query }) {
+function useMovies ({ query, isSort }) {
   const [movies, setMovies] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   // ? Se usa una referencia para guardar el estado anterior
   const previousSearch = useRef(query)
 
-  const getMovies = async () => {
+  // * Usando `useMemo` para que la función sólo se cree una vez, pero acepte por parámetro la nueva query
+  const getMovies = useMemo(() => async ({ query }) => {
+    console.log('🚀 ~ getMovies ~ query:', query)
     if (query === previousSearch.current) return null
     try {
       setIsLoading(true)
@@ -22,9 +24,16 @@ function useMovies ({ query }) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  return { movies, getMovies, isLoading, error }
+  // ? Usamos `useMemo` para que el ordenamiento se realice al cambiar `isSort` y `movies`, pero que NO cuando lo haga `query` (ya que porque ejecutará por completo el hook)
+  const sortedMoviesByTitle = useMemo(() => isSort
+    // ? `localeCompare` compara dos cadenas de texto sin importar los acentos
+    ? [...movies].sort((a, b) => a.title.localeCompare(b.title))
+    : movies
+  , [isSort, movies])
+
+  return { movies: sortedMoviesByTitle, getMovies, isLoading, error }
 }
 
 export { useMovies }
