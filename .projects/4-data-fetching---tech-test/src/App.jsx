@@ -3,6 +3,7 @@ import { useCatImage } from './hooks/use-cat-image.js'
 import { useCatFact } from './hooks/use-cat-fact.js'
 
 export default function App () {
+  console.log('🟢 App')
   const { fact, isLoading, error, refreshFact } = useCatFact()
   const { imageUrl } = useCatImage({ fact })
 

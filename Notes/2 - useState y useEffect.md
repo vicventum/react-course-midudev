@@ -114,7 +114,7 @@ const [board, setBoard] = useState(() => { // 👈
 
 Con esto además la obtención del _local storage_ sólo se ejecutará una vez en la inicialización del estado, y no en cada render
 
-## Comprobar suscripciones a eventos
+## 🌟 Comprobar suscripciones a eventos
 
 Un error muy común al usar `useEffect` es olvidarse desuscribirse a eventos, ya que si olvidamos hacerlo al limpiar el efecto, dichas suscripciones se irán acumulando cada vez que el efecto se ejecute, provocando problemas de rendimiento:
 

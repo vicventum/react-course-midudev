@@ -10,14 +10,15 @@ function useCatImage ({ fact }) {
 
   const { data, isLoading, error, refresh } = useFetch(({ signal }) => {
     // if (!fact) return { data: null, isLoading: true, error: null, refresh: null }
+    // if (!fact) return null
 
     const threeFirstWord = fact.split(' ', 3).join(' ')
     return getCatImage(provider, { words: threeFirstWord, signal })
   })
 
   useEffect(() => {
-    console.log('🟡🟡 ~ hook useEffect useCatImage ~ fact:', fact)
     if (!fact) return undefined
+    console.log('🟡🟡 ~ hook useEffect useCatImage ~ fact:', fact)
     refresh()
   }, [fact])
 

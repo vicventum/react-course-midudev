@@ -1,10 +1,13 @@
 import './App.css'
 import { useCatImage } from './api/hooks/use-cat-image.js'
 import { useCatFact } from './api/hooks/use-cat-fact.js'
+// import { useCatImage } from './api/hooks/use-cat-image.old.js'
+// import { useCatFact } from './api/hooks/use-cat-fact.old.js'
 
 export default function App () {
   const { data: fact, isLoading, isError, error, refresh: refreshFact } = useCatFact()
   const { data: imageUrl, isLoading: imgIsLoading } = useCatImage({ fact })
+  // const { fact, refreshFact } = useCatFact()
   // const { imageUrl } = useCatImage({ fact })
   console.log('🟢 ~ Component App ~ imageUrl:', fact, imageUrl)
 
