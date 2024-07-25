@@ -1,10 +1,12 @@
-function App() {
+import { products } from './mocks/products.json'
+import { Products } from './components/Products'
 
-	return (
-		<>
-			<div>oli</div>
-		</>
-	)
+function App() {
+  return (
+    <>
+      <Products products={products} />
+    </>
+  )
 }
 
 export default App
