@@ -1,3 +1,0 @@
-Sitio web que promociona un <strong>acortador de links</strong> funcional. Reto proporcionado por la plataforma <a href="http://frontendmentor.io/" target="_blank">FrontendMentor.io</a>.
-
-Dicho proyecto se destaca por agrupar las mejores prácticas de código aprendidas usando <strong>Vue.js</strong>, <strong>Nuxt</strong> para el uso del <strong>Server Side Rendering</strong> (<strong>SSR</strong>) y así aumentar la rapidez de navegación y  proporcionar una mejor experiencia de usuario, agregando además <em>Lazy Loading</em> y pequeñas animaciones que enriquecen más la experiencia.
