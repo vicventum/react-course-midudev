@@ -390,3 +390,22 @@ export function Filters() {
   )
 }
 ```
+
+## Recomendación al usar el Context con Custom Hooks
+
+Al llamar un Contexto desde un Custom Hook, es una buena práctica **comprobar que lo que devuelve el contexto al llamarlo es diferente a `undefined`, esto porque de serlo, implicaría que esa parte de la aplicación no está envuelta en un _provider_**:
+
+**useCart.jsx**
+```jsx
+import { useContext } from 'react'
+import { CartContext } from '@/context/CartContext'
+
+export function useCart() {
+  const context = useContext(CartContext)
+
+  if (context === undefined) // 👈
+    throw new Error('useCart must be used within a CartProvider') // 👈
+    
+  // ...
+}
+```
