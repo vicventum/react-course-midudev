@@ -1,8 +1,8 @@
 import './Cart.css'
 import { useId } from 'react'
 import { CartIcon, ClearCartIcon } from '@/components/base/Icons.jsx'
-import { CartItem } from '@/components/CartItem.jsx'
-import { useCart } from '../hooks/useCart.js'
+import { CartItem } from '@/components/shopping/CartItem.jsx'
+import { useCart } from '@/hooks/use-cart.js'
 
 export function Cart() {
   const cartCheckboxId = useId()
