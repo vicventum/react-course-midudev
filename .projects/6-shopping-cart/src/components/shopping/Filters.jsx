@@ -1,16 +1,15 @@
-import { useState, useId } from 'react'
 import './Filters.css'
+import { useId } from 'react'
+import { useFilters } from '@/hooks/use-filters'
 
-export function Filters({ changeFilters }) {
-  const [minPrice, setMinPrice] = useState(0)
+export function Filters() {
   const minPriceFilterId = useId()
   const categoryFilterId = useId()
+  const { filters, setFilters } = useFilters()
 
   function handleChangeMinPrice(e) {
     const range = e.target.value
-    // ! Esto huele mal, porque hay **dos fuentes de la verdad**
-    setMinPrice(range)
-    changeFilters(prevState => ({
+    setFilters(prevState => ({
       ...prevState,
       minPrice: range,
     }))
@@ -18,8 +17,7 @@ export function Filters({ changeFilters }) {
 
   function handleChangeCategory(e) {
     const category = e.target.value
-    // ! Esto huele mal, porque estamos pasando la función actualizadora de estado de React a un componente hijo
-    changeFilters(prevState => ({
+    setFilters(prevState => ({
       ...prevState,
       category,
     }))
@@ -30,14 +28,15 @@ export function Filters({ changeFilters }) {
       <div>
         <label htmlFor={minPriceFilterId}>Precio a partir de:</label>
         <input
-          type='range'
           id={minPriceFilterId}
+          value={filters.minPrice}
+          type='range'
           min='0'
           max='1000'
           step='10'
           onChange={handleChangeMinPrice}
         />
-        <span>${minPrice}</span>
+        <span>${filters.minPrice}</span>
       </div>
 
       <div>

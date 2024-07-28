@@ -113,7 +113,7 @@ export function Filters({ changeFilters }) { // 👈❌
 
 Para ello lo que haremos será crear una abstración
 
-## `useId`
+## `useId` - Ids únicos para elementos
 
 A veces al crear _ids_ puede darse el caso que haya más de un elemento con el mismo _id_ en toda la aplicación (más aún si la aplicación es muy grande), lo cual está mal ya que los _ids_ deberían ser únicos a través de toda la aplicación.
 
@@ -240,3 +240,153 @@ export function Filters({ changeFilters }) {
 }
 ```
 
+## Evitar tener mas de una fuente de la verdad
+
+Esto sucede cuando tenemos el valor de un dato en local, no es el mismo que el que tenemos en nuestro estado global, y por lo tanto, no sabemos de cual fiarnos.
+
+En este caso tenemos dos fuentes de la verdad porque tenemos un `minPrice` de forma local en el componente `Filter`, que es diferente al `minPrice` del estado global del contexto `FiltersContext`, entonces cuando cambia, tenemos que actualizar ambos estados:
+
+**FiltersContext.jsx**
+```jsx
+import { createContext, useState } from 'react'
+
+// Paso 1/4 - Crea el contexto que debemos consumir
+const FiltersContext = createContext()
+
+// Paso 2/4 - Crea el Provider para proveer el contexto
+function FiltersProvider({ children }) {
+  const [filters, setFilters] = useState({
+    category: 'all',
+    minPrice: 0, // 👈
+  })
+
+  return (
+    <FiltersContext.Provider value={{ filters, setFilters }}>
+      {children}
+    </FiltersContext.Provider>
+  )
+}
+
+export { FiltersContext, FiltersProvider }
+```
+
+**Filters.jsx**
+```jsx
+import { useState, useId } from 'react'
+import './Filters.css'
+import { useFilters } from '@/hooks/use-filters'
+
+export function Filters() {
+  const [minPrice, setMinPrice] = useState(0) // 👈
+  const minPriceFilterId = useId()
+  const categoryFilterId = useId()
+  const { setFilters } = useFilters()
+
+  function handleChangeMinPrice(e) {
+    const range = e.target.value
+    // ! Esto huele mal, porque hay **dos fuentes de la verdad**
+    setMinPrice(range) // 👈
+    setFilters(prevState => ({
+      ...prevState,
+      minPrice: range, // 👈
+    }))
+  }
+
+  function handleChangeCategory(e) {
+    const category = e.target.value
+    setFilters(prevState => ({
+      ...prevState,
+      category,
+    }))
+  }
+
+  return (
+    <section className='filters'>
+      <div>
+        <label htmlFor={minPriceFilterId}>Precio a partir de:</label>
+        <input
+          id={minPriceFilterId}
+          value={minPrice} // 👈
+          type='range'
+          min='0'
+          max='1000'
+          step='10'
+          onChange={handleChangeMinPrice}
+        />
+        <span>${minPrice}</span> // 👈
+      </div>
+
+      <div>
+        <label htmlFor={categoryFilterId}>Categoría</label>
+        <select id={categoryFilterId} onChange={handleChangeCategory}>
+          <option value='all'>Todas</option>
+          <option value='beauty'>Belleza</option>
+          <option value='fragrances'>Fragancias</option>
+          <option value='furniture'>Muebles</option>
+          <option value='groceries'>Comestibles</option>
+        </select>
+      </div>
+    </section>
+  )
+}
+```
+
+Para corregir esto lo que debemos hacer es sólo fiarnos de una fuente de la verdad, que en este caso sería el estado global. Por lo que simplemente tendríamos que borrar el estado local y usar el estado global:
+
+**Filters.jsx**
+```jsx
+import './Filters.css'
+import { useId } from 'react'
+import { useFilters } from '@/hooks/use-filters'
+
+export function Filters() {
+  const minPriceFilterId = useId()
+  const categoryFilterId = useId()
+  const { filters, setFilters } = useFilters()
+
+  function handleChangeMinPrice(e) {
+    const range = e.target.value
+    setFilters(prevState => ({
+      ...prevState,
+      minPrice: range, // 👈
+    }))
+  }
+
+  function handleChangeCategory(e) {
+    const category = e.target.value
+    setFilters(prevState => ({
+      ...prevState,
+      category,
+    }))
+  }
+
+  return (
+    <section className='filters'>
+      <div>
+        <label htmlFor={minPriceFilterId}>Precio a partir de:</label>
+        <input
+          id={minPriceFilterId}
+          value={filters.minPrice} // 👈
+          type='range'
+          min='0'
+          max='1000'
+          step='10'
+          onChange={handleChangeMinPrice}
+        />
+        <span>${filters.minPrice}</span> // 👈
+      </div>
+
+      <div>
+        <label htmlFor={categoryFilterId}>Categoría</label>
+        <select id={categoryFilterId} onChange={handleChangeCategory}>
+          <option value='all'>Todas</option>
+          <option value='beauty'>Belleza</option>
+          <option value='fragrances'>Fragancias</option>
+          <option value='furniture'>Muebles</option>
+          <option value='groceries'>Comestibles</option>
+        </select>
+      </div>
+    </section>
+  )
+}
+```
